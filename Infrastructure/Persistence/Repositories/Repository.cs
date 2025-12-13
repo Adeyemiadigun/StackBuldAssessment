@@ -10,7 +10,7 @@ namespace Infrastructure.Persistence;
 
 public class Repository<T> : IRepository<T> where T : BaseClass
 {
-    private readonly StoreDbContext _context;
+    public readonly StoreDbContext _context;
     private readonly DbSet<T> _dbSet;
 
     public Repository(StoreDbContext context)

@@ -3,12 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AdmissionMinaret.Infrastructure.Persistence.Seeders;
 using AdmissionMinaret.Infrastructure.Services;
+using Application.Common.Interfaces;
 using Application.Services;
+using Infrastructure.Persistence.Repositories;
+using Infrastructure.Persistence;
 using Infrastructure.Services;
 using Infrastructure.Services.Payment.Paystack;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Infrastructure.Persistence.Context;
+using Application.Repositories;
 
 namespace Infrastructure
 {
@@ -30,7 +37,21 @@ namespace Infrastructure
             {
                 client.BaseAddress = new Uri("https://api.paystack.co/");
             });
+            // Add DbContext
+            services.AddDbContext<StoreDbContext>(options =>
+                options.UseNpgsql(
+                    configuration.GetConnectionString("DefaultConnection"),
+                    b => b.MigrationsAssembly(typeof(StoreDbContext).Assembly.FullName)));
 
+            // Register generic repository
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IOrderRepository, OrderRepository>();
+
+            // Register UnitOfWork
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            // Register Database Seeder
+            services.AddScoped<DatabaseSeeder>();
             return services;
 
         }

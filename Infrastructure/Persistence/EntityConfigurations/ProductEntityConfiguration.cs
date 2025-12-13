@@ -1,29 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.EntityConfigurations
+namespace Infrastructure.Persistence.EntityConfigurations;
+public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
-    public class ProductEntityConfiguration : IEntityTypeConfiguration<Product>
+    public void Configure(EntityTypeBuilder<Product> builder)
     {
-        public void Configure(EntityTypeBuilder<Product> b)
-        {
-            b.HasKey(p => p.Id);
+        // Table name
+        builder.ToTable("Products");
 
-            b.Property(p => p.Name).HasMaxLength(200).IsRequired();
+        // Primary key
+        builder.HasKey(p => p.Id);
 
-            b.Property(p => p.Description).HasMaxLength(1000);
+        // Properties
+        builder.Property(p => p.Name)
+            .IsRequired()
+            .HasMaxLength(200);
 
-            b.Property(p => p.Price).HasPrecision(18, 2).IsRequired();
+        builder.Property(p => p.Description)
+            .IsRequired()
+            .HasMaxLength(1000);
 
-            b.Property(p => p.StockQuantity).IsRequired();
+        builder.Property(p => p.Price)
+            .IsRequired()
+            .HasPrecision(18, 2);
 
-            b.Property(p => p.RowVersion).IsRowVersion(); //
-        }
+        builder.Property(p => p.StockQuantity)
+            .IsRequired();
+
+
+        builder.Property(p => p.CreatedAt)
+            .IsRequired()
+            .HasDefaultValueSql("GETUTCDATE()");
+
+        // RowVersion for concurrency control
+        builder.Property(p => p.RowVersion)
+            .IsRowVersion();
+
+        // Optional: configure private setters if needed
+        builder.Metadata
+            .FindNavigation(nameof(Product.Name))?
+            .SetPropertyAccessMode(PropertyAccessMode.Field);
+
+        builder.Metadata
+            .FindNavigation(nameof(Product.Description))?
+            .SetPropertyAccessMode(PropertyAccessMode.Field);
     }
 }

@@ -4,10 +4,11 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controllers;
+namespace Api.Controllers.V1;
 
 [ApiController]
-[Route("api/v1/payments")]
+[Route("api/v{version:apiVersion}/payments")]
+[ApiVersion("1.0")]
 [Authorize]
 public class PaymentsController : ControllerBase
 {

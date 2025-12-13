@@ -1,27 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.EntityConfigurations
+
+namespace Infrastructure.Persistence.EntityConfigurations;
+public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
 {
-    public class OrderItemEntityConfiguration : IEntityTypeConfiguration<OrderItem>
+    public void Configure(EntityTypeBuilder<OrderItem> builder)
     {
-        public void Configure(EntityTypeBuilder<OrderItem> b)
-        {
-            b.HasKey(oi => oi.Id);
+        // Table name
+        builder.ToTable("OrderItems");
 
-            b.Property<Guid>("OrderId");
+        // Primary key
+        builder.HasKey(oi => oi.Id);
 
-            b.Property(oi => oi.ProductId).IsRequired();
+        // Properties
+        builder.Property(oi => oi.ProductId)
+            .IsRequired();
 
-            b.Property(oi => oi.Quantity).IsRequired();
+        builder.Property(oi => oi.OrderId)
+            .IsRequired();
 
-            b.Property(oi => oi.UnitPrice).HasPrecision(18, 2).IsRequired();
-        }
+        builder.Property(oi => oi.Quantity)
+            .IsRequired();
+
+        builder.Property(oi => oi.UnitPrice)
+            .IsRequired()
+            .HasPrecision(18, 2);
+
+        // Relationships
+        builder.HasOne(oi => oi.Product)
+            .WithMany()
+            .HasForeignKey(oi => oi.ProductId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasOne<Order>()
+            .WithMany(o => o.Items)
+            .HasForeignKey(oi => oi.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Optional: configure backing fields if you want strict domain encapsulation
+        builder.Metadata
+            .FindNavigation(nameof(OrderItem.Product))?
+            .SetPropertyAccessMode(PropertyAccessMode.Field);
     }
 }
