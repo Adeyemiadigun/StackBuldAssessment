@@ -48,7 +48,20 @@ CodeCoverage/
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
 
+.vs
+
 # NUnit
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Visual Studio 2015 cache/options directory
+.vs/
+.vscode/
+.idea/
+
+# .NET Core
+project.fragment.lock.json
+artifacts/
+**/Properties/launchSettings.json
+*.txt
