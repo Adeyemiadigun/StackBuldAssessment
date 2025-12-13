@@ -9,5 +9,5 @@ using MediatR;
 
 namespace Application.Commands.Products.UpdateProductCommand
 {
-    public record UpdateProductCommand(UpdateProductRequestDto request) : IRequest<DataResponse<ProductDto>>;
+    public record UpdateProductCommand(Guid Id,UpdateProductRequestDto request) : IRequest<DataResponse<ProductDto>>;
 }

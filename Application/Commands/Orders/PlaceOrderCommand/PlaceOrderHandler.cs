@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.Common.Interfaces;
 using Application.Exceptions;
+using Application.Services;
 using Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -15,17 +16,19 @@ namespace Application.Commands.Orders.PlaceOrderCommand;
         private readonly IRepository<Product> _productRepo;
         private readonly IRepository<Order> _orderRepo;
         private readonly IUnitOfWork _uow;
+        private readonly ICurrentUser _currentUser;
         private readonly ILogger<PlaceOrderHandler> _logger;
 
         public PlaceOrderHandler(
             IRepository<Product> productRepo,
             IRepository<Order> orderRepo,
-            IUnitOfWork uow,ILogger<PlaceOrderHandler> logger)
+            IUnitOfWork uow,ILogger<PlaceOrderHandler> logger,ICurrentUser currentUser)
         {
             _productRepo = productRepo;
             _orderRepo = orderRepo;
             _uow = uow;
             _logger = logger;
+            _currentUser = currentUser;
         }
 
     public async Task<Guid> Handle(PlaceOrderCommand request, CancellationToken cancellationToken)
@@ -38,6 +41,7 @@ namespace Application.Commands.Orders.PlaceOrderCommand;
             {
                 await _uow.BeginTransactionAsync();
                 _logger.LogInformation("Place Order Transaction Begins - Attempt {Attempt}", attempt);
+                var userId = await _currentUser.GetUserAsync();
 
                 var items = new List<OrderItem>();
 
@@ -57,7 +61,7 @@ namespace Application.Commands.Orders.PlaceOrderCommand;
                         product.Price));
                 }
 
-                var order = new Order(items);
+                var order = new Order(items, userId);
 
                 await _orderRepo.AddAsync(order, cancellationToken);
 

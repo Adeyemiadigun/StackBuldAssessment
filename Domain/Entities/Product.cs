@@ -6,6 +6,7 @@
         public string Description { get; private set; } = null!;
         public decimal Price { get; private set; }
         public int StockQuantity { get; private set; }
+        public bool IsDeleted
         public DateTime CreatedAt { get; private set; }
 
         public byte[]? RowVersion { get; private set; }

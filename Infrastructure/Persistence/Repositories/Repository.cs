@@ -18,6 +18,13 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         _context = context;
         _dbSet = context.Set<T>();
     }
+    public async Task<T?> FirstOrDefaultAsync(
+    Expression<Func<T, bool>> predicate,
+    CancellationToken cancellationToken = default)
+    {
+        return await _dbSet.FirstOrDefaultAsync(predicate, cancellationToken);
+    }
+
 
     public async Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
@@ -29,7 +36,7 @@ public class Repository<T> : IRepository<T> where T : BaseClass
         return await _dbSet.AsNoTracking().ToListAsync(cancellationToken);
     }
 
-    public IQueryable<T> Query()
+    public virtual IQueryable<T> Query()
     {
         return _dbSet.AsQueryable();
     }

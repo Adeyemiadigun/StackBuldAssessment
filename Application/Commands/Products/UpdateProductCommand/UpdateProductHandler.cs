@@ -13,15 +13,15 @@ namespace Application.Commands.Products.UpdateProductCommand
         public async Task<DataResponse<ProductDto>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
 
-            logger.LogInformation("Updating Product with Id {0}", request.request.Id);
+            logger.LogInformation("Updating Product with Id {0}", request.Id);
 
-            var product = await _repo.GetByIdAsync(request.request.Id,cancellationToken) ?? throw new ApiException("Product Not Found",404,"ProductNotFound");
+            var product = await _repo.GetByIdAsync(request.Id,cancellationToken) ?? throw new ApiException("Product Not Found",404,"ProductNotFound");
 
             var updateRequest = request.request;
 
             product.UpdateProduct(updateRequest.ProductName,updateRequest.Description, updateRequest.Price, updateRequest.StockQuantity);
 
-           await _repo.UpdateAsync(product);
+           await _repo.UpdateAsync(product,cancellationToken);
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
             return new DataResponse<ProductDto>

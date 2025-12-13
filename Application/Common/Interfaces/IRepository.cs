@@ -13,6 +13,9 @@ public interface IRepository<T> where T : BaseClass
     IQueryable<T> Query(); // For pagination, filtering
 
     Task AddAsync(T entity, CancellationToken cancellationToken = default);
+    Task<T?> FirstOrDefaultAsync(
+    Expression<Func<T, bool>> predicate,
+    CancellationToken cancellationToken = default)
 
     Task UpdateAsync(T entity, CancellationToken cancellationToken = default);
 

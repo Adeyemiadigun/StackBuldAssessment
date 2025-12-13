@@ -10,12 +10,12 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Services
 {
-    public class JwtTokenGenerator : IJwtTokenService
+    public class JwtTokenService : IJwtTokenService
     {
         private readonly JwtSettings _settings;
         private readonly IHttpContextAccessor _contextAccessor;
 
-        public JwtTokenGenerator(IOptions<JwtSettings> settings, IHttpContextAccessor httpContext)
+        public JwtTokenService(IOptions<JwtSettings> settings, IHttpContextAccessor httpContext)
         {
             _settings = settings.Value;
             _contextAccessor = httpContext;
