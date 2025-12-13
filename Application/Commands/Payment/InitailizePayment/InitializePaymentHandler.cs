@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Commands.Payment.VerifyPayment;
 using Application.Common.Interfaces;
 using Application.Common.Models;
 using Application.Exceptions;
@@ -22,9 +23,9 @@ namespace Application.Commands.Payment.InitailizePayment
         private readonly IRepository<PaymentTransaction> _paymentTransactionRepo; 
         private readonly IPaymentGateway _paymentGateway;
         private readonly ICurrentUser _currentUser;
-        private readonly ILogger _logger;
+        private readonly ILogger<InitiatePaymentHandler> _logger;
         private readonly IUnitOfWork _unitOfWork;
-        public InitiatePaymentHandler(IRepository<Order> orderRepo,IPaymentGateway paymentGateway, IRepository<PaymentTransaction> paymentTransactionRepo, ICurrentUser currentUser, ILogger logger, IUnitOfWork unitOfWork)
+        public InitiatePaymentHandler(IRepository<Order> orderRepo,IPaymentGateway paymentGateway, IRepository<PaymentTransaction> paymentTransactionRepo, ICurrentUser currentUser, ILogger<InitiatePaymentHandler> logger, IUnitOfWork unitOfWork)
         {
             _orderRepo = orderRepo;
             _paymentGateway = paymentGateway;

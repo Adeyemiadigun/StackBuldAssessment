@@ -32,6 +32,7 @@ namespace Infrastructure
             services.AddScoped<ICurrentUser, CurrentUserService>();
             services.Configure<PaystackOptions>(
              configuration.GetSection("Paystack"));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddHttpClient<IPaymentGateway, PaystackPaymentGateway>(client =>
             {

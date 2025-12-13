@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.Persistence.Context;
 using System;
 
-namespace AdmissionMinaret.Infrastructure.Persistence.Extensions;
+namespace Infrastructure.Persistence.Extensions;
 
 public static class DatabaseExtensions
 {

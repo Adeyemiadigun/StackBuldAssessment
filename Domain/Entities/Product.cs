@@ -18,7 +18,6 @@
             Description = description;
             Price = price;
             StockQuantity = stockQuantity;
-            CreatedAt = DateTime.Now;
         }
 
         public void DecreaseStock(int quantity)

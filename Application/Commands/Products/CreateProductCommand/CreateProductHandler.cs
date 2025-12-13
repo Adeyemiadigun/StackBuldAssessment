@@ -13,8 +13,8 @@ namespace Application.Commands.Products.CreateProductCommand
 {
     public class CreateProductHandler(IRepository<Product> repo, IUnitOfWork unitOfWork,ILogger<CreateProductHandler> logger) : IRequestHandler<CreateProductCommand, DataResponse<Guid>>
     {
-
-        public async Task<DataResponse<Guid> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        
+        public async Task<DataResponse<Guid>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             logger.LogInformation("About to create Product");
 

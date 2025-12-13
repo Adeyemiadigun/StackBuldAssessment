@@ -10,8 +10,15 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.Persistence.Repositories
 {
-    internal class UnitOfWork(StoreDbContext _context, IDbContextTransaction dbContextTransaction) : IUnitOfWork
+    internal class UnitOfWork : IUnitOfWork
     {
+        private readonly StoreDbContext _context;
+        private IDbContextTransaction? dbContextTransaction;
+
+        public UnitOfWork(StoreDbContext context)
+        {
+            _context = context;
+        }
         public async Task BeginTransactionAsync()
         {
             dbContextTransaction = await _context.Database.BeginTransactionAsync();

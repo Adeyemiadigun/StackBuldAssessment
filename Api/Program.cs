@@ -10,6 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 using Application.Commands.Orders.PlaceOrderCommand;
 using Api.MiddleWare;
 using Microsoft.OpenApi.Models;
+using Infrastructure.Persistence.Extensions;
+using System.Reflection;
+using Application.Commands.Auth.Login;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -38,6 +43,14 @@ builder.Services.AddValidatorsFromAssemblyContaining<PlaceOrderCommandValidator>
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 
+builder.Services.AddDatabase(builder.Configuration);
+
+builder.Services.AddMediatR(cfg =>
+{
+    // Point to the Application assembly by referencing a known type, like LoginCommand.
+    // This tells MediatR to scan that entire assembly for all IRequest, IRequestHandler, etc.
+    cfg.RegisterServicesFromAssembly(typeof(LoginCommand).Assembly);
+});
 
 // Add API Versioning
 builder.Services.AddApiVersioning(options =>
@@ -99,6 +112,8 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+
 
 
 var app = builder.Build();

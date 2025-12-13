@@ -59,7 +59,5 @@ namespace Infrastructure.Persistence.EntityConfigurations
                 .SetPropertyAccessMode(PropertyAccessMode.Field);
         }
     }
-    class PaymentTransactionConfiguration
-    {
-    }
+   
 }

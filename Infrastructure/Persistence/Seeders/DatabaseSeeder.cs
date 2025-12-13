@@ -54,7 +54,6 @@ public class DatabaseSeeder(
 
         // Check if admin user already exists
         var existingAdmin = await context.Users
-            .Include(u => u.Role)
             .FirstOrDefaultAsync(u => u.Email == adminEmail);
 
         if (existingAdmin != null)

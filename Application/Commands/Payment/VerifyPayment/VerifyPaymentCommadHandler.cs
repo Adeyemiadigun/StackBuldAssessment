@@ -65,7 +65,12 @@ namespace Application.Commands.Payment.VerifyPayment
             order.MarkAsPaid();
 
            await _unitOfWork.SaveChangesAsync(ct);
-
+            return new DataResponse<VerificationData>
+            {
+                Success = true,
+                Message = "Payment Successfull",
+                Data = new VerificationData(payment.Id, payment.Amount, result.Status, request.Reference, payment.CreatedAt)
+            };
 
         }
     }

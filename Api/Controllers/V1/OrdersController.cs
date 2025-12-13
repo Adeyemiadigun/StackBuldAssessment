@@ -11,9 +11,10 @@ using Application.Queries.Orders.GetAllOrders;
 
 namespace Api.Controllers.V1
 {
+
+    [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [ApiVersion("1.0")]
     public class OrdersController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -24,7 +25,7 @@ namespace Api.Controllers.V1
         }
 
         [Authorize(Roles = nameof(UserRole.Customer))]
-        [HttpGet("orders")]
+        [HttpGet]
         public async Task<IActionResult> GetMyOrders(
             [FromQuery] OrderStatus? status,
             [FromQuery] PaginationRequest request)
@@ -36,7 +37,7 @@ namespace Api.Controllers.V1
             return Ok(result);
         }
         [Authorize]
-        [HttpGet("orders/{id:guid}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetOrderById(Guid id)
         {
 
