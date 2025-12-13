@@ -2,6 +2,7 @@
 using System.Net;
 using System.Text.Json;
 using Api.Models;
+using Application.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.MiddleWare
