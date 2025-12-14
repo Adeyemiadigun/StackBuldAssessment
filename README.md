@@ -47,12 +47,13 @@ ASP.NET Core API Versioning
 Setup & Configuration
 1. Clone the repository
 git clone https://github.com/Adeyemiadigun/StackBuldAssessment.git
+
 cd StackBuldAssessment
 
-2. Install dependencies
+3. Install dependencies
 dotnet restore
 
-3. Configure appsettings.json
+4. Configure appsettings.json
 {
   "Logging": {
     "LogLevel": {
@@ -72,12 +73,12 @@ dotnet restore
     "DefaultConnection": "Host=localhost;Database=store_db;Username=postgres;Password=password;Port=5432;"
   },
   "DefaultAdmin": {
-    "Email": "admin@Store.com",
-    "Password": "Admin@123"
+    "Email": "admin email",
+    "Password": "admin password"
   }
 }
 
-4. Run migrations & seed database
+5. Run migrations & seed database
 dotnet ef database update
 
 
@@ -107,6 +108,7 @@ Auth
 Method	Endpoint	Roles	Request	Response
 POST	/api/v1/auth/register	Anonymous	{ "Email": "...", "Password": "..." }	{ "UserId": "..." }
 POST	/api/v1/auth/login	Anonymous	{ "Email": "...", "Password": "..." }	{ "Data": { "AccessToken": "...", "ExpiresAt": "..." }, "Success": true, "Message": "Login Successfully" }
+
 Products
 Method	Endpoint	Roles	Request	Response
 POST	/api/v1/products	Admin	{ "Name":"...", "Description":"...", "Price":100, "StockQuantity":10 }	201 Created
@@ -114,19 +116,23 @@ PUT	/api/v1/products/{id}	Admin	{ "ProductName":"...", "Description":"...", "Pri
 DELETE	/api/v1/products/{id}	Admin	-	204 No Content
 GET	/api/v1/products	Public	?page=1&pageSize=10	Paginated list of products
 GET	/api/v1/products/{id}	Public	-	Product details
+
 Orders
 Method	Endpoint	Roles	Request	Response
 GET	/api/v1/orders	Customer	?status=Paid&fromDate=...&toDate=...&page=1&pageSize=10	Paginated user orders
 GET	/api/v1/orders/{id}	Customer/Admin	-	Order details
 GET	/api/v1/orders/admin/orders	Admin	?status=Paid&fromDate=...&toDate=...&page=1&pageSize=10	Paginated all orders
 GET	/api/v1/orders/{orderId}/transactions	Customer/Admin	-	Transaction history for an order
+
 User Transactions
 Method	Endpoint	Roles	Request	Response
 GET	/api/v1/users/transactions	Customer	?status=Success&fromDate=...&toDate=...&page=1&pageSize=10	Paginated list of user transactions
+
 Payments
 Method	Endpoint	Roles	Request	Response
 POST	/api/v1/payments/initiate	Customer	{ "OrderId":"...", "Email":"..." }	{ "Success": true, "AuthorizationUrl": "...", "Reference": "..." }
 GET	/api/v1/payments/verify	Customer	?reference=...	{ "Success": true, "Status": "Success", "Amount": 100, "Reference": "..." }
+
 DTOs & Models
 Auth
 public record CreateUserDto(string Email, string Password);
