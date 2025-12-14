@@ -31,7 +31,7 @@ namespace Application.Queries.Orders.GetUserTransactions
         {
             var userId = await _currentUser.GetUserAsync();
             var paged = await _transactionRepo.GetByUserIdAsync(userId,
-                request.Status,request.Request,
+                request.Status,request.FromDate,request.ToDate,request.Request,
                 ct);
 
             var mapped = paged.Items.Select(t => new OrderTransactionDto(

@@ -17,11 +17,12 @@ namespace Application.Repositories
         Task<IReadOnlyList<PaymentTransaction>> GetByOrderIdAsync(
             Guid orderId,
             CancellationToken ct);
-       Task<PagedResult<PaymentTransaction>> GetByUserIdAsync(
-    Guid userId,
-    PaymentStatus? status,
-    PaginationRequest request,
-    CancellationToken ct);
+        Task<PagedResult<PaymentTransaction>> GetByUserIdAsync(
+          Guid userId,
+          PaymentStatus? status, DateTime? fromDate,
+          DateTime? toDate,
+          PaginationRequest request,
+          CancellationToken ct);
     }
 
 }

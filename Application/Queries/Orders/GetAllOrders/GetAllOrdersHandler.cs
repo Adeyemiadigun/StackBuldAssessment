@@ -23,13 +23,19 @@ namespace Application.Queries.Orders.GetAllOrders
         }
 
         public async Task<DataResponse<PagedResult<OrderListDto>>> Handle(
-            GetAllOrdersQuery request,
-            CancellationToken ct)
+     GetAllOrdersQuery request,
+     CancellationToken ct)
         {
             var query = _orderRepo.Query();
 
             if (request.Status.HasValue)
                 query = query.Where(o => o.Status == request.Status);
+
+            if (request.FromDate.HasValue)
+                query = query.Where(o => o.CreatedAt >= request.FromDate.Value);
+
+            if (request.ToDate.HasValue)
+                query = query.Where(o => o.CreatedAt <= request.ToDate.Value);
 
             var projected = query
                 .OrderByDescending(o => o.CreatedAt)
@@ -43,9 +49,10 @@ namespace Application.Queries.Orders.GetAllOrders
             return new DataResponse<PagedResult<OrderListDto>>
             {
                 Data = await projected.ToPagedResultAsync(
-                request.request.page, request.request.pageSize),
+                    request.Request.page,
+                    request.Request.pageSize),
                 Success = true,
-                Message = "Orders Retrieved"
+                Message = "Orders retrieved successfully"
             };
         }
     }

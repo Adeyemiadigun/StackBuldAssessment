@@ -35,6 +35,11 @@ namespace Application.Queries.Orders.GetUserOrders
 
             if (request.Status.HasValue)
                 query = query.Where(o => o.Status == request.Status);
+            if (request.FromDate.HasValue)
+                query = query.Where(o => o.CreatedAt >= request.FromDate.Value);
+
+            if (request.ToDate.HasValue)
+                query = query.Where(o => o.CreatedAt <= request.ToDate.Value);
 
             var projected = query
                 .OrderByDescending(o => o.CreatedAt)

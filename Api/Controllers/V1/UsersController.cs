@@ -24,11 +24,13 @@ namespace Api.Controllers.V1
         [HttpGet("transactions")]
         public async Task<IActionResult> GetMyTransactions(
         [FromQuery] PaymentStatus? status,
+        [FromQuery] DateTime? fromDate,
+         [FromQuery] DateTime? toDate,
         [FromQuery] PaginationRequest request)
         {
 
             var result = await _mediator.Send(
-                new GetUserTransactionsQuery( status, request));
+                new GetUserTransactionsQuery( status,fromDate,toDate, request));
 
             return Ok(result);
         }

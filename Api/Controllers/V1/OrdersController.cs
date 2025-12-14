@@ -29,11 +29,13 @@ namespace Api.Controllers.V1
         [HttpGet]
         public async Task<IActionResult> GetMyOrders(
             [FromQuery] OrderStatus? status,
+            [FromQuery] DateTime? fromDate,
+            [FromQuery] DateTime? toDate,
             [FromQuery] PaginationRequest request)
         {
 
             var result = await _mediator.Send(
-                new GetUserOrdersQuery(status, request));
+                new GetUserOrdersQuery(status, fromDate, toDate, request));
 
             return Ok(result);
         }
@@ -51,14 +53,17 @@ namespace Api.Controllers.V1
         [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpGet("admin/orders")]
         public async Task<IActionResult> GetAllOrders(
-        [FromQuery] OrderStatus? status,
-        [FromQuery] PaginationRequest request)
+         [FromQuery] OrderStatus? status,
+         [FromQuery] DateTime? fromDate,
+         [FromQuery] DateTime? toDate,
+         [FromQuery] PaginationRequest request)
         {
             var result = await _mediator.Send(
-                new GetAllOrdersQuery(status,request));
+                new GetAllOrdersQuery(status, fromDate, toDate, request));
 
             return Ok(result);
         }
+
 
         [Authorize]
         [HttpGet("{orderId:guid}/transactions")]
@@ -70,8 +75,5 @@ namespace Api.Controllers.V1
 
             return Ok(result);
         }
-
-
-
     }
 }

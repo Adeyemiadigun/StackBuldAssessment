@@ -12,7 +12,8 @@ using MediatR;
 namespace Application.Queries.Orders.GetUserTransactions
 {
     public record GetUserTransactionsQuery(
-    PaymentStatus? Status,PaginationRequest Request
+    PaymentStatus? Status, DateTime? FromDate,
+    DateTime? ToDate, PaginationRequest Request
 ) : IRequest<DataResponse<PagedResult<OrderTransactionDto>>>;
 
 }

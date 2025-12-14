@@ -29,7 +29,8 @@ namespace Infrastructure.Persistence.Repositories
         }
         public async Task<PagedResult<PaymentTransaction>> GetByUserIdAsync(
         Guid userId,
-        PaymentStatus? status,
+        PaymentStatus? status, DateTime? fromDate,
+    DateTime? toDate,
         PaginationRequest request,
         CancellationToken ct)
         {
@@ -39,7 +40,11 @@ namespace Infrastructure.Persistence.Repositories
 
             if (status.HasValue)
                 query = query.Where(t => t.Status == status.Value);
+            if (fromDate.HasValue)
+                query = query.Where(o => o.CreatedAt >= fromDate.Value);
 
+            if (toDate.HasValue)
+                query = query.Where(o => o.CreatedAt <= toDate.Value);
             var total = await query.CountAsync(ct);
 
             var data = await query

@@ -12,7 +12,9 @@ using MediatR;
 namespace Application.Queries.Orders.GetAllOrders
 {
     public record GetAllOrdersQuery(
-    OrderStatus? Status,PaginationRequest request
+    OrderStatus? Status, DateTime? FromDate,
+    DateTime? ToDate,
+    PaginationRequest Request
 ) : IRequest<DataResponse<PagedResult<OrderListDto>>>;
 
 }
