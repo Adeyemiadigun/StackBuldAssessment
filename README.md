@@ -229,3 +229,10 @@ Responses follow:
   "Message": "Invalid credentials",
   "Error": {...}
 }
+
+
+Live Demo
+The API is deployed and accessible online:
+https://stackbuldassessment.onrender.com
+
+You can test endpoints directly using tools like Postman or Insomnia, or integrate with your frontend.
