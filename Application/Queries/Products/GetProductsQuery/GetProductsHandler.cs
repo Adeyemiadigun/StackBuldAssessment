@@ -19,13 +19,8 @@ namespace Application.Queries.Products.GetProductsQuery
                 .OrderBy(x => x.Name)
                 .ToPagedResultAsync(request.request.page, request.request.pageSize);
 
-            var paged = new PagedResult<ProductDto>
-            {
-                Items = products.Items.Select(x => x.ToProductDto()).ToList(),
-                PageNumber = products.PageNumber,
-                PageSize = products.PageSize,
-                TotalCount = products.TotalCount,
-            };
+            var paged = new PagedResult<ProductDto>(products.Items.Select(x => x.ToProductDto()).ToList(), products.TotalCount, products.PageNumber, products.PageSize);
+           
 
 
             return new DataResponse<PagedResult<ProductDto>>

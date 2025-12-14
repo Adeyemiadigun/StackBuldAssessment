@@ -47,6 +47,7 @@ namespace Infrastructure
             // Register generic repository
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IPaymentTransactionRepository, PaymentTransactionRepository>();
 
             // Register UnitOfWork
             services.AddScoped<IUnitOfWork, UnitOfWork>();
