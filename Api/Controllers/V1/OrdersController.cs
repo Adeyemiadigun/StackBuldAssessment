@@ -8,6 +8,7 @@ using Application.Queries.Orders.GetUserOrders;
 using Application.Common.Models;
 using Application.Queries.Orders.GetOrderById;
 using Application.Queries.Orders.GetAllOrders;
+using Application.Queries.Orders.GetOrderTransaction;
 
 namespace Api.Controllers.V1
 {
@@ -46,6 +47,7 @@ namespace Api.Controllers.V1
 
             return Ok(result);
         }
+
         [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpGet("admin/orders")]
         public async Task<IActionResult> GetAllOrders(
@@ -57,6 +59,18 @@ namespace Api.Controllers.V1
 
             return Ok(result);
         }
+
+        [Authorize]
+        [HttpGet("{orderId:guid}/transactions")]
+        public async Task<IActionResult> GetOrderTransactions(Guid orderId)
+        {
+
+            var result = await _mediator.Send(
+                new GetOrderTransactionsQuery(orderId));
+
+            return Ok(result);
+        }
+
 
 
     }

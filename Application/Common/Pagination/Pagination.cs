@@ -14,6 +14,17 @@ namespace Application.Common.Pagination
         public int PageSize { get; set; }
         public int TotalCount { get; set; }
         public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
+        public PagedResult(
+        IReadOnlyList<T> items,
+        int totalCount,
+        int pageNumber,
+        int pageSize)
+        {
+            Items = items;
+            TotalCount = totalCount;
+            PageNumber = pageNumber;
+            PageSize = pageSize;
+        }
     }
 
     public static class PaginationExtensions
@@ -29,13 +40,7 @@ namespace Application.Common.Pagination
                 .Take(pageSize)
                 .ToList();
 
-            return new PagedResult<T>
-            {
-                Items = items,
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-                TotalCount = totalCount
-            };
+            return new PagedResult<T>(items, totalCount, pageNumber, pageSize);
         }
     }
 
