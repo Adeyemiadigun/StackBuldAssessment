@@ -95,7 +95,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "TwinTrack API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "StackBuld Assessment API", Version = "v1" });
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {

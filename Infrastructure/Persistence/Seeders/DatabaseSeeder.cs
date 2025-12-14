@@ -49,8 +49,8 @@ public class DatabaseSeeder(
         logger.LogInformation("Seeding admin user...");
 
         // Get admin credentials from configuration
-        var adminEmail = configuration["DefaultAdmin:Email"] ?? "admin@admissionminaret.com";
-        var adminPassword = configuration["DefaultAdmin:Password"] ?? "Admin@123";
+        var adminEmail = configuration["DefaultAdmin:Email"];
+        var adminPassword = configuration["DefaultAdmin:Password"] ;
 
         // Check if admin user already exists
         var existingAdmin = await context.Users
