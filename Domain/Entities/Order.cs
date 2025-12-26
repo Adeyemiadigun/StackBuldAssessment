@@ -10,7 +10,7 @@ public class Order : BaseClass
     public Guid UserId { get; private set; }
     private readonly List<OrderItem> _items = new();
     public IReadOnlyList<OrderItem> Items => _items.AsReadOnly();
-    public decimal TotalAmount => _items.Sum(x=>x.UnitPrice);
+    public decimal TotalAmount => _items.Sum(x => x.UnitPrice * x.Quantity);
     private readonly List<PaymentTransaction> paymentTransactions = new();
 
     public IReadOnlyCollection<PaymentTransaction> Transactions => paymentTransactions;

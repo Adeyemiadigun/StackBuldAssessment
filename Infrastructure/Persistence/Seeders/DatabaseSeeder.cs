@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Infrastructure.Persistence.Context;
 using Application.Services;
 
-namespace AdmissionMinaret.Infrastructure.Persistence.Seeders;
+namespace StackBuldAssessment.Infrastructure.Persistence.Seeders;
 
 /// <summary>
 /// Handles seeding of initial data into the database

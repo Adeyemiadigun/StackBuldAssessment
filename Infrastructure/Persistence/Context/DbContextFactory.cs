@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 
-namespace AdmissionMinaret.Infrastructure.Persistence.Context;
+namespace StackBuldAssessment.Infrastructure.Persistence.Context;
 
 /// <summary>
 /// Design-time factory for creating AppDbContext instances during migrations
@@ -27,7 +27,7 @@ public class AppDbContextFactory : IDesignTimeDbContextFactory<StoreDbContext>
         if (!Directory.Exists(apiProjectPath))
         {
             throw new InvalidOperationException(
-                $"Cannot locate AdmissionMinaret.Api project. Current directory: {currentDirectory}");
+                $"Cannot locate StackBuldAssessment.Api project. Current directory: {currentDirectory}");
         }
 
         // Build configuration

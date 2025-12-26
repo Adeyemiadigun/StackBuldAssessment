@@ -32,8 +32,8 @@
             if (quantity <= 0) throw new ArgumentException("Quantity must be > 0");
             StockQuantity += quantity;
         }
-        public bool IsInStock(int quantity) 
-            { return StockQuantity <= quantity; }
+        public bool IsInStock(int quantity)
+            { return StockQuantity >= quantity; }
         public bool UpdateProduct(string name, string description, decimal price, int stockQuantity)
         {
             Name = name;

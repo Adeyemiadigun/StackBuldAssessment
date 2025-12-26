@@ -3,6 +3,7 @@ using Application.Commands.Auth.RegisterUser;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Api.Controllers.V1
 {
@@ -19,6 +20,7 @@ namespace Api.Controllers.V1
         }
 
         [HttpPost("register")]
+        [EnableRateLimiting("AuthPolicy")]
         public async Task<IActionResult> Register(CreateUserDto user)
         {
             var id = await _mediator.Send(new RegisterUserCommand(user));
@@ -26,6 +28,7 @@ namespace Api.Controllers.V1
         }
 
         [HttpPost("login")]
+        [EnableRateLimiting("AuthPolicy")]
         public async Task<IActionResult> Login(LoginDto request)
         {
             var result = await _mediator.Send(new LoginCommand(request));

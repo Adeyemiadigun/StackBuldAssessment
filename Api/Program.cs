@@ -4,6 +4,8 @@ using Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using HealthChecks.Uris;
+using System.Threading.RateLimiting;
 
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
@@ -118,8 +120,68 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+// Add Health Checks
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddHealthChecks()
+    .AddNpgSql(connectionString!, name: "database", tags: new[] { "db", "sql" })
+    .AddUrlGroup(new Uri("https://api.paystack.co/"), "paystack", tags: new[] { "external", "payment" })
+    .AddCheck("self", () => Microsoft.Extensions.Diagnostics.HealthChecks.HealthCheckResult.Healthy());
 
+// Add Rate Limiting
+builder.Services.AddRateLimiter(options =>
+{
+    // Global rate limiting policy
+    options.AddPolicy("GlobalPolicy", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 100,
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 2,
+                QueueLimit = 10,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+            }));
 
+    // Strict rate limiting for authentication endpoints
+    options.AddPolicy("AuthPolicy", context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 2,
+                QueueLimit = 2,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+            }));
+
+    // Configure rejected response
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        context.HttpContext.Response.StatusCode = 429; // Too Many Requests
+        context.HttpContext.Response.ContentType = "application/json";
+
+        var retryAfter = ((int)TimeSpan.FromMinutes(1).TotalSeconds).ToString();
+        context.HttpContext.Response.Headers.Append("Retry-After", retryAfter);
+
+        await context.HttpContext.Response.WriteAsJsonAsync(new
+        {
+            error = "Too many requests. Please try again later.",
+            retryAfter = $"1 minute"
+        }, cancellationToken);
+    };
+
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+        RateLimitPartition.GetSlidingWindowLimiter(
+            partitionKey: context.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
+            factory: _ => new SlidingWindowRateLimiterOptions
+            {
+                PermitLimit = 100,
+                Window = TimeSpan.FromMinutes(1),
+                SegmentsPerWindow = 2
+            }));
+});
 
 var app = builder.Build();
 
@@ -128,7 +190,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
-        var seeder = services.GetRequiredService<AdmissionMinaret.Infrastructure.Persistence.Seeders.DatabaseSeeder>();
+        var seeder = services.GetRequiredService<StackBuldAssessment.Infrastructure.Persistence.Seeders.DatabaseSeeder>();
         await seeder.SeedAsync();
     }
     catch (Exception ex)
@@ -146,9 +208,22 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseSecurityHeaders();
 app.UseHttpsRedirection();
+app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Map health check endpoints
+app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    ResponseWriter = Microsoft.AspNetCore.Diagnostics.HealthChecks.UI.Client.UIResponseWriter.WriteHealthCheckUIResponse
+});
+
+app.MapHealthChecks("/health/ready", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("db")
+});
 
 app.MapControllers();
 

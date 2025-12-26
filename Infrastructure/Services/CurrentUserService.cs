@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Application.Services;
 using Microsoft.AspNetCore.Http;
 
-namespace AdmissionMinaret.Infrastructure.Services;
+namespace StackBuldAssessment.Infrastructure.Services;
 
 public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUser
 {
